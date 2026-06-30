@@ -1,0 +1,20 @@
+-------- 30.06.2026 --------
+----------------------------
+
+# Define user name/email
+git config --global user.name "your_name"
+git config --global user.email "your email"
+
+# Kiem tra cau hinh
+cat ~/.gitconfig
+
+# Khởi tạo repository
+git init
+
+# Add một file vào repository
+git add "file name"
+# Xác nhận việc thêm file vào repository
+git commit
+
+
+
