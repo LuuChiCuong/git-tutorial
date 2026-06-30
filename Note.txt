@@ -4,6 +4,9 @@
 # Define user name/email
 git config --global user.name "your_name"
 git config --global user.email "your email"
+
+==> Chú ý: email dùng git có thể giống hoặc khác với email github !!!!
+==> Khi push lên github sẽ cần xác thực
 ----------------------------------------------------------------------
 # Kiem tra cau hinh
 cat ~/.gitconfig
@@ -23,9 +26,12 @@ file add .                      ==> add tất cả các thay đổi
 VD:
 git add Note.txt
 ==> Trạng thái của file: Staging area
+==> Chú ý rằng lệnh này chỉ có tác dụng với những thay đổi trước khi chạy lệnh
+==> Sau khi chạy lệnh git add mà có những thay đổi thì không được áp dụng khi commit
+
 Working area                Staging area                Commited
 ----------------------------> Note.txt
-----------------------------------------------------------------------
+
 # Xác nhận việc thêm file vào repository - Đẩy một file từ Staging sang Commit area
 git commit -m "message for description"
 ==> Trạng thái của file: Commited
@@ -51,7 +57,8 @@ GIẢI THÍCH:
 - modified: file đã được "git add" nhưng chưa commit
 ----------------------------------------------------------------------
 # Kiểm tra history commit
-git log
+git log         ==> SPACE BAR: Xem tiếp các trang log (nếu quá dài)
+                ==> Q: thoát chế độ xem log
 commit 83f72538bd64291167038ee4c84f3a7717e3f26b (HEAD -> main)
 Author: Luu Chi Cuong <luuchicuong82@gmail.com>
 Date:   Tue Jun 30 19:54:20 2026 +0700
@@ -69,13 +76,291 @@ GIẢI THÍCH:
  (HEAD -> main): Nhánh chính (mặc định)
  Commit mới nhất được xếp trên cùng
  Luu Chi Cuong <luuchicuong82@gmail.com>: User và Email của tài khoản git
- 83f72538bd64291167038ee4c84f3a7717e3f26b: Hash code của file commit
- 5ae488893d0e1636d7a74c856483a90ab9495d93: Hash code của file commit
+ 83f72538bd64291167038ee4c84f3a7717e3f26b: Hash code SHA của file commit
+ 5ae488893d0e1636d7a74c856483a90ab9495d93: Hash code SHA của file commit
  Upload file text/edit file Note.txt: Giá trị của tham số -m (đóng vai trò như mô tả)
 ----------------------------------------------------------------------
+# Push file lên github
+# Tạo một repo trên github: git-tutorial
+git remote add origin https://github.com/LuuChiCuong/git-tutorial.git   ==> Đường dẫn để kết nối đến repo
+git branch -M main                                                      ==> Chọn nhánh để push
+git push -u origin main                                                 ==> Thực hiện push
 
+----------------------------------------------------------------------
+git branch      ==> Liệt kê tất cả các nhánh trong git đã được tạo cho dự án
+PS ...\MyProject> git branch
+* main
+==> Branch có dấu "*" đang là branch hiện tại
 
+PS ...\MyProject> git checkout -b body-style    ==> Tạo branch mới có tên "body-style"
+Switched to a new branch 'body-style'
 
+PS ...\MyProject> git branch                    ==> Branch "* body-style" là branch hiện hành
+* body-style
+  main
 
+----------------------------------------------------------------------
+==>  Chuyển 1 file từ trạng thái staged về lại thư mục đang làm việc
+PS ...\MyProject> git status        
+On branch body-style
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   index2.css
 
+PS ...\MyProject>git restore --staged index2.css
+PS ...\MyProject> git status                     
+On branch body-style
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   index2.css
+----------------------------------------------------------------------
+==> Kiểm tra git log trên nhánh mới
+==> Tất cả git log từ nhánh main sẽ được ghi nhận vào nhánh body-style (vì đây là nhánh con kế thừa)
+PS ...\MyProject> git log
+commit e2a2d50fc1f4cb9dd30504bd732849d7866ff8d6 (HEAD -> body-style)    <======
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:59:40 2026 +0700
+
+    Add index2.css file
+
+commit 56fb550e85df36674255fb9ccbb7df5cdec0d1f2 (origin/main, main)     <======
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:42:02 2026 +0700
+
+    Update index.html file
+
+commit 0ec144c02f0296f3fcfba784a2a22960dfa1ae8f
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:33:10 2026 +0700
+
+    Add css files
+----------------------------------------------------------------------
+==> Chuyển branch: chuyển từ branch "body-style" về branch "main"
+PS ...\MyProject> git checkout main
+M       Links.txt
+M       Note.txt
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+
+PS ...\MyProject> git branch
+  body-style
+* main                              <======
+==> Kiểm tra lại git log: sẽ không thấy log commit "Add index2.css file" (vì đã được commit ở branch "body-style")
+==> Khi đó những thay đổi trong branch body-style sẽ không được áp dụng (do chưa merge)
+PS ...\MyProject> git log
+commit 56fb550e85df36674255fb9ccbb7df5cdec0d1f2 (HEAD -> main, origin/main)
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:42:02 2026 +0700
+
+    Update index.html file
+
+commit 0ec144c02f0296f3fcfba784a2a22960dfa1ae8f
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:33:10 2026 +0700
+
+    Add css files
+----------------------------------------------------------------------
+==> Merge branch con (body-style) vào branch main
+==> Phải đứng ở branch main mới merge được các nhánh con (chiều ngược lại không được)
+==> Chú ý: index2.css được tạo ở nhánh body-style, nhánh main trước đó không có !!!!!!!!!!!
+==> Sau khi merge thì nhánh main sẽ có tính năng được tạo ra ở nhánh body-style
+
+PS ...\MyProject> git checkout main         ==> Chuyển về nhánh main
+PS ...\MyProject> git merge body-style      ==> Thực hiện merge
+Updating 56fb550..e2a2d50
+Fast-forward
+ index2.css | 3 +++
+ 1 file changed, 3 insertions(+)
+
+----------------------------------------------------------------------
+==> Rollback về version cũ hơn
+==> 1: Show log
+==> 2: Chọn thời điểm để Rollback
+==> 3: git checkout "hash code tương ứng với thời điểm"
+
+PS ...\MyProject> git log      
+PS ...\MyProject> git log      
+commit e2a2d50fc1f4cb9dd30504bd732849d7866ff8d6 (HEAD -> main, body-style)
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:59:40 2026 +0700
+
+    Add index2.css file
+
+commit 56fb550e85df36674255fb9ccbb7df5cdec0d1f2 (origin/main)
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:42:02 2026 +0700
+
+    Update index.html file
+
+commit 0ec144c02f0296f3fcfba784a2a22960dfa1ae8f
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:33:10 2026 +0700
+
+    Add css files
+
+commit ff76b8c66d853a69c9ed350c7cd22ae9f91638f9         <==== Chọn thời điểm này để Rollback
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 23:20:39 2026 +0700
+
+    Add index.html file
+
+==> git checkout ff76b8c66d853a69c9ed350c7cd22ae9f91638f9
+==> Tất cả những thay đổi trước đó sẽ bị Rollback, ngay cả các file chứa mã lệnh tương ứng cũng bị xóa
+==> Output:
+PS ...\MyProject> git checkout ff76b8c66d853a69c9ed350c7cd22ae9f91638f9
+M       Links.txt
+M       Note.txt
+Note: switching to 'ff76b8c66d853a69c9ed350c7cd22ae9f91638f9'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+HEAD is now at ff76b8c Add index.html file
+
+PS ...\MyProject> git branch
+* (HEAD detached at ff76b8c)            <==== Một Branch mới được tạo ra tương đương với việc Rollback
+  body-style
+  main
+----------------------------------------------------------------------
+==> Unrollback: Quay trở lại phiên bản mới nhất (hủy chế độ Rollback ở trên)
+==> Bằng cách chỉ định thời điểm 
+PS ...\MyProject> git checkout e2a2d50fc1f4cb9dd30504bd732849d7866ff8d6
+M       Links.txt
+M       Note.txt
+Previous HEAD position was ff76b8c Add index.html file
+HEAD is now at e2a2d50 Add index2.css file
+
+==> Việc này cũng tương đương với việc
+
+----------------------------------------------------------------------
+==> CONFLICT:
+Giả sử có 2 thay đổi trong file index.html.
+1. Thay đổi và commit local
+body>
+    <p>This is APP</p>
+    <button>SUBMIT</button>
+</body>
+--> 
+body>
+    <p>This is APP NEW</p>
+    <button>NEW SUBMIT</button>
+</body>
+2. Thay đổi và commit ở github
+body>
+    <p>This is APP</p>
+    <button>SUBMIT</button>
+</body>
+--> 
+<body>
+    <p>This is NEW APP</p>
+    <button>SUBMITED</button>
+</body>
+
+==> Thực hiện push: sẽ có thông báo conflict 
+PS ...\MyProject> git push
+To https://github.com/LuuChiCuong/git-tutorial.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/LuuChiCuong/git-tutorial.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+==> GIẢI QUYẾT:
+
+PS ...\MyProject> git pull
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 3 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (3/3), 1.01 KiB | 43.00 KiB/s, done.
+From https://github.com/LuuChiCuong/git-tutorial
+   e2a2d50..473411a  main       -> origin/main
+Auto-merging index.html
+CONFLICT (content): Merge conflict in index.html
+Automatic merge failed; fix conflicts and then commit the result.
+
+==> Sau khi thực hiện git pull: trong file xảy ra conflict sẽ chỉ ra vị trí code bị conflict
+==> Phần phía trên là local, phần phía dưới là github
+
+<body>
+<<<<<<< HEAD
+    <p>This is APP NEW</p>
+    <button>NEW SUBMIT</button>
+=======
+    <p>This is NEW APP</p>
+    <button>SUBMITED</button>
+>>>>>>> 473411ab1908043d238142a2ef0a399de2f1eb7a
+</body>
+
+==> Ví dụ chọn local
+==> Kiểm tra: file chưa được merge
+PS ...\MyProject> git status                            
+On branch main
+Your branch and 'origin/main' have diverged,
+and have 1 and 1 different commits each, respectively.
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both modified:   index.html
+
+==> Thực hiện merge và push
+PS ...\MyProject> git add index.html
+PS ...\MyProject> git commit -m 'Resolve conflict index.html file'
+[main 87df4b7] Resolve conflict index.html file
+
+PS ...\MyProject> git log
+commit 87df4b7f63f8a25a83f302d0d88849666802a432 (HEAD -> main)
+Merge: 4af6110 473411a
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Wed Jul 1 01:27:39 2026 +0700
+
+    Resolve conflict index.html file                    <==========
+
+commit 4af6110556d37852444737d0297cf5425ba82fd4
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Wed Jul 1 01:05:41 2026 +0700
+
+PS ...\MyProject> git push
+Enumerating objects: 10, done.
+Counting objects: 100% (10/10), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), 618 bytes | 154.00 KiB/s, done.
+Total 6 (delta 4), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (4/4), completed with 2 local objects.
+To https://github.com/LuuChiCuong/git-tutorial.git
+   473411a..87df4b7  main -> main
+----------------------------------------------------------------------
+==> Chủ định danh sách những thứ ko push lên github
+.gitignore
+
+PS ...\MyProject> git status          
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   .gitignore
+        modified:   Links.txt
+        modified:   Note.txt
+==> Không xuất hiện .env đang Untracked        
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
 
