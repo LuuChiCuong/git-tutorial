@@ -4,20 +4,76 @@
 # Define user name/email
 git config --global user.name "your_name"
 git config --global user.email "your email"
-
+----------------------------------------------------------------------
 # Kiem tra cau hinh
 cat ~/.gitconfig
-
+----------------------------------------------------------------------
 # Khởi tạo repository
 git init
-
-# Add một file vào repository
-git add "file name"
-# Xác nhận việc thêm file vào repository
+----------------------------------------------------------------------
+Tạo 1 file tên Note.txt 
+==> Trạng thái của file: Đang ở thư mục làm việc
+Working area                Staging area                Commited
+Note.txt
+----------------------------------------------------------------------
+# Add một file vào repository - Lúc này file sẽ được đưa từ thư mục làm việc vào Staging area và sẵn sàng cho commit
+git add file_name               ==> add một file
+git add file1 file2 file3       ==> add nhiều file
+file add .                      ==> add tất cả các file
+VD:
+git add Note.txt
+==> Trạng thái của file: Staging area
+Working area                Staging area                Commited
+----------------------------> Note.txt
+----------------------------------------------------------------------
+# Xác nhận việc thêm file vào repository - Đẩy một file từ Staging sang Commit area
 git commit -m "message for description"
-
+==> Trạng thái của file: Commited
+Working area                Staging area                Commited
+                             -------------------------> Note.txt 
+----------------------------------------------------------------------
 # Kiểm trạng thái add và commit file vào repository
 git status
+On branch main
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   Note.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        Links.txt
+        index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+GIẢI THÍCH:
+- Untracked: file chưa được "git add", chưa được đưa vào trạng thái theo dõi sự thay đổi 
+- modified: file đã được "git add" nhưng chưa commit
+----------------------------------------------------------------------
+# Kiểm tra history commit
+git log
+commit 83f72538bd64291167038ee4c84f3a7717e3f26b (HEAD -> main)
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 19:54:20 2026 +0700
+
+    edit file Note.txt
+
+commit 5ae488893d0e1636d7a74c856483a90ab9495d93
+Author: Luu Chi Cuong <luuchicuong82@gmail.com>
+Date:   Tue Jun 30 19:42:55 2026 +0700
+
+    Upload file text
+
+GIẢI THÍCH:
+ - Đã có 2 commit được thực hiện:
+ (HEAD -> main): Nhánh chính (mặc định)
+ Commit mới nhất được xếp trên cùng
+ Luu Chi Cuong <luuchicuong82@gmail.com>: User và Email của tài khoản git
+ 83f72538bd64291167038ee4c84f3a7717e3f26b: Hash code của file commit
+ 5ae488893d0e1636d7a74c856483a90ab9495d93: Hash code của file commit
+ Upload file text/edit file Note.txt: Giá trị của tham số -m (đóng vai trò như mô tả)
+----------------------------------------------------------------------
+
 
 
 
