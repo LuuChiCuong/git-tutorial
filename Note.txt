@@ -19,7 +19,7 @@ Note.txt
 # Add một file vào repository - Lúc này file sẽ được đưa từ thư mục làm việc vào Staging area và sẵn sàng cho commit
 git add file_name               ==> add một file
 git add file1 file2 file3       ==> add nhiều file
-file add .                      ==> add tất cả các file
+file add .                      ==> add tất cả các thay đổi 
 VD:
 git add Note.txt
 ==> Trạng thái của file: Staging area
